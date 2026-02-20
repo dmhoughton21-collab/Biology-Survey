@@ -142,14 +142,14 @@ def read_body(handler):
     except Exception:
         return {}
 
-def serve_file(handler, path):
+def serve_file(handler, path, content_type='text/html; charset=utf-8'):
     try:
         with open(path, 'rb') as f:
             data = f.read()
         handler.send_response(200)
-        handler.send_header('Content-Type', 'text/html; charset=utf-8')
+        handler.send_header('Content-Type', content_type)
         handler.send_header('Content-Length', len(data))
-        # Prevent Cloudflare from injecting scripts or mangling content
+        # Prevent Cloudflare from modifying file contents
         handler.send_header('Cache-Control', 'no-transform')
         handler.end_headers()
         handler.wfile.write(data)
@@ -168,11 +168,17 @@ class SurveyHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         path = urlparse(self.path).path
 
-        # Serve frontend
+        # Serve frontend HTML
         if path in ('/', '/index.html'):
             return serve_file(self, os.path.join(
                 os.path.dirname(os.path.abspath(__file__)), 'index.html'
-            ))
+            ), 'text/html; charset=utf-8')
+
+        # Serve JS as a separate file so Cloudflare cannot inject into it
+        if path == '/app.js':
+            return serve_file(self, os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), 'app.js'
+            ), 'application/javascript; charset=utf-8')
 
         # Admin: requires auth
         token = get_session_token(self)
