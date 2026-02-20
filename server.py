@@ -169,7 +169,7 @@ class SurveyHandler(http.server.BaseHTTPRequestHandler):
         # Serve frontend
         if path in ('/', '/index.html'):
             return serve_file(self, os.path.join(
-                os.path.dirname(__file__), 'public', 'index.html'
+                os.path.dirname(os.path.abspath(__file__)), 'index.html'
             ))
 
         # Admin: requires auth
