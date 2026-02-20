@@ -149,6 +149,8 @@ def serve_file(handler, path):
         handler.send_response(200)
         handler.send_header('Content-Type', 'text/html; charset=utf-8')
         handler.send_header('Content-Length', len(data))
+        # Prevent Cloudflare from injecting scripts or mangling content
+        handler.send_header('Cache-Control', 'no-transform')
         handler.end_headers()
         handler.wfile.write(data)
     except FileNotFoundError:
