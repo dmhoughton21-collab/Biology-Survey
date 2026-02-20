@@ -1,9 +1,0 @@
-tomlproviders = ["node"]
-
-[start]
-cmd = "node server.js"
-```
-
-**2. Create a new file called `.node-version`** (the dot at the front is important) with just this one line:
-```
-22
