@@ -1,0 +1,11 @@
+toml[phases.setup]
+nixPkgs = ["nodejs_22"]
+
+[start]
+cmd = "node server.js"
+```
+5. Scroll down and click the green **"Commit changes"** button (the message box should already say something — if not, type anything like `Add nixpacks config`)
+
+Once you commit that file, Railway should automatically detect the change and trigger a new deployment. Watch the logs — it will take a minute to install Node 22 and then you should see:
+```
+Biology Survey Server running at http://localhost:3000
